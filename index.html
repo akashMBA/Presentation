@@ -1,0 +1,1393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credit Rating Agencies: An Overview</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --success: #27ae60;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+        
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            padding: 40px;
+            background-color: white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transform: translateX(100%);
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease;
+            opacity: 0;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        
+        .slide.active {
+            transform: translateX(0);
+            opacity: 1;
+            z-index: 10;
+        }
+        
+        .slide.prev {
+            transform: translateX(-100%);
+            opacity: 0;
+        }
+        
+        .slide.next {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        
+        .slide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .slide-title {
+            font-size: 2.2rem;
+            color: var(--primary);
+            font-weight: 700;
+            margin: 0;
+        }
+        
+        .slide-number {
+            font-size: 1rem;
+            color: var(--secondary);
+            background-color: rgba(52, 152, 219, 0.1);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        
+        .slide-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .text-content {
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+        
+        .highlight {
+            background-color: rgba(52, 152, 219, 0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+        
+        .chart-container {
+            width: 100%;
+            height: 300px;
+            margin: 20px 0;
+            position: relative;
+        }
+        
+        .chart {
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-title {
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .card-content {
+            font-size: 0.95rem;
+            color: #555;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: var(--primary);
+            color: white;
+            font-weight: 500;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        
+        .quote {
+            font-style: italic;
+            color: #555;
+            border-left: 4px solid var(--secondary);
+            padding-left: 20px;
+            margin: 20px 0;
+        }
+        
+        .controls {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 10px;
+            z-index: 100;
+        }
+        
+        .control-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+        
+        .control-btn:hover {
+            transform: scale(1.1);
+            background-color: var(--secondary);
+        }
+        
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background-color: rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: var(--secondary);
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+        
+        .footer {
+            margin-top: auto;
+            padding-top: 20px;
+            font-size: 0.8rem;
+            color: #777;
+            text-align: center;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .timeline {
+            position: relative;
+            max-width: 100%;
+            margin: 30px 0;
+        }
+        
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 2px;
+            background-color: var(--secondary);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -1px;
+        }
+        
+        .timeline-item {
+            padding: 10px 40px;
+            position: relative;
+            width: 50%;
+            box-sizing: border-box;
+        }
+        
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border: 4px solid var(--secondary);
+            border-radius: 50%;
+            top: 15px;
+            z-index: 1;
+        }
+        
+        .left {
+            left: 0;
+        }
+        
+        .right {
+            left: 50%;
+        }
+        
+        .left::after {
+            right: -10px;
+        }
+        
+        .right::after {
+            left: -10px;
+        }
+        
+        .timeline-content {
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        .timeline-year {
+            font-weight: bold;
+            color: var(--secondary);
+            margin-bottom: 5px;
+        }
+        
+        @media screen and (max-width: 768px) {
+            .slide {
+                padding: 20px;
+            }
+            
+            .slide-title {
+                font-size: 1.8rem;
+            }
+            
+            .timeline::after {
+                left: 31px;
+            }
+            
+            .timeline-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+            
+            .timeline-item::after {
+                left: 21px;
+            }
+            
+            .left::after, .right::after {
+                left: 21px;
+            }
+            
+            .right {
+                left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar">
+        <div class="progress" id="progress"></div>
+    </div>
+    
+    <div class="presentation-container" id="presentation">
+        <!-- Slide 1: Title Slide -->
+        <div class="slide active" id="slide1">
+            <div class="slide-content" style="justify-content: center; align-items: center; text-align: center;">
+                <h1 style="font-size: 3rem; color: var(--primary); margin-bottom: 20px;">Credit Rating Agencies</h1>
+                <h2 style="font-size: 1.8rem; color: var(--secondary); margin-bottom: 40px;">An Overview</h2>
+                <div style="max-width: 600px; margin: 0 auto;">
+                    <p style="font-size: 1.1rem; margin-bottom: 30px;">Based on the work of White, L. J. (2013) and current market data</p>
+                </div>
+                <div style="margin-top: 40px;">
+                    <p style="font-size: 0.9rem; color: #777;">Presented by: Gaurab Raymajhi, Neeraj Ray, Bishnu Oli, Akash Upadhyay</p>
+                    <p style="font-size: 0.9rem; color: #777;">MBA-F, Nepal Commerce Campus</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 2: What to Expect -->
+        <div class="slide" id="slide2">
+            <div class="slide-header">
+                <h2 class="slide-title">What to Expect?</h2>
+                <span class="slide-number">2</span>
+            </div>
+            <div class="slide-content">
+                <div class="grid">
+                    <div class="card">
+                        <h3 class="card-title"><i class="fas fa-question-circle" style="color: var(--secondary); margin-right: 10px;"></i>What are CRAs?</h3>
+                        <p class="card-content">Understanding the role and function of Credit Rating Agencies in financial markets.</p>
+                    </div>
+                    <div class="card">
+                        <h3 class="card-title"><i class="fas fa-chart-bar" style="color: var(--secondary); margin-right: 10px;"></i>Market Position</h3>
+                        <p class="card-content">Analysis of the dominant position of major CRAs in the rating industry.</p>
+                    </div>
+                    <div class="card">
+                        <h3 class="card-title"><i class="fas fa-balance-scale" style="color: var(--secondary); margin-right: 10px;"></i>Regulations</h3>
+                        <p class="card-content">Review of regulatory frameworks and their impact on CRAs.</p>
+                    </div>
+                    <div class="card">
+                        <h3 class="card-title"><i class="fas fa-lightbulb" style="color: var(--secondary); margin-right: 10px;"></i>Alternatives</h3>
+                        <p class="card-content">Exploring alternative business models and recommendations.</p>
+                    </div>
+                </div>
+                <div class="footer">
+                    <p>Credit Rating Agencies: An Overview | Presentation</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 3: Introduction -->
+        <div class="slide" id="slide3">
+            <div class="slide-header">
+                <h2 class="slide-title">What Is a Credit Rating Agency?</h2>
+                <span class="slide-number">3</span>
+            </div>
+            <div class="slide-content">
+                <div class="text-content">
+                    <p>Credit Rating Agencies (CRAs) are <span class="highlight">third-party analyzers</span> that assess the creditworthiness of bond issuers and their debt instruments.</p>
+                    
+                    <div class="grid" style="margin-top: 30px;">
+                        <div class="card">
+                            <h3 class="card-title">Key Functions</h3>
+                            <ul style="padding-left: 20px; color: #555;">
+                                <li style="margin-bottom: 8px;">Provide creditworthiness advisory services</li>
+                                <li style="margin-bottom: 8px;">Collect and analyze issuer information</li>
+                                <li style="margin-bottom: 8px;">Publish standardized ratings</li>
+                                <li>Reduce information asymmetry between lenders and borrowers</li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <h3 class="card-title">Impact</h3>
+                            <ul style="padding-left: 20px; color: #555;">
+                                <li style="margin-bottom: 8px;">Influence interest rates for borrowers</li>
+                                <li style="margin-bottom: 8px;">Guide investment decisions</li>
+                                <li style="margin-bottom: 8px;">Affect market stability and liquidity</li>
+                                <li>Integrated into prudential regulations</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer">
+                    <p>Credit Rating Agencies serve as critical intermediaries in bond markets</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 4: Historical Timeline -->
+        <div class="slide" id="slide4">
+            <div class="slide-header">
+                <h2 class="slide-title">Major Dates in CRA History</h2>
+                <span class="slide-number">4</span>
+            </div>
+            <div class="slide-content">
+                <div class="timeline">
+                    <div class="timeline-item left">
+                        <div class="timeline-content">
+                            <div class="timeline-year">1909</div>
+                            <p>Moody published first rating manual for railway company bonds using Investor Pay model</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item right">
+                        <div class="timeline-content">
+                            <div class="timeline-year">1936</div>
+                            <p>Federal bank mandated bonds must be rated investment grade by recognized rating manuals</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item left">
+                        <div class="timeline-content">
+                            <div class="timeline-year">1960</div>
+                            <p>Moody switched to Issuer Pay Model, changing industry dynamics</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item right">
+                        <div class="timeline-content">
+                            <div class="timeline-year">1975</div>
+                            <p>SEC created Nationally Recognized Statistical Rating Organization (NRSRO) category</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item left">
+                        <div class="timeline-content">
+                            <div class="timeline-year">2001</div>
+                            <p>Enron bankruptcy while rated investment grade exposed rating flaws</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item right">
+                        <div class="timeline-content">
+                            <div class="timeline-year">2006</div>
+                            <p>Congress passed Credit Rating Agency Reform Act in response to SEC inaction</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer">
+                    <p>Credit Rating Agencies have evolved through regulatory and market changes</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 5: Rating Scale -->
+        <div class="slide" id="slide5">
+            <div class="slide-header">
+                <h2 class="slide-title">Rating Scale Significance</h2>
+                <span class="slide-number">5</span>
+            </div>
+            <div class="slide-content">
+                <div class="text-content">
+                    <p>Credit Rating Agencies use standardized letter and number scales to communicate bond risk levels.</p>
+                    
+                    <div class="chart-container">
+                        <div class="chart" id="ratingScaleChart" style="display: flex; justify-content: center; align-items: center;">
+                            <img src="https://www.investopedia.com/thmb/9z5vL7x8YwJ5Q5Q5Q5Q5Q5Q5Q5Q=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/credit-rating-scale-5a9a5b0d0e32770037b5d5a5.png" alt="Credit Rating Scale" style="max-height: 100%; max-width: 100%; object-fit: contain;">
+                        </div>
+                    </div>
+                    
+                    <div class="grid">
+                        <div class="card">
+                            <h3 class="card-title">For Borrowers</h3>
+                            <p class="card-content">Higher credit ratings lead to lower interest rates, reducing borrowing costs.</p>
+                        </div>
+                        <div class="card">
+                            <h3 class="card-title">For Investors</h3>
+                            <p class="card-content">Lower ratings indicate higher risk, requiring higher potential returns.</p>
+                        </div>
+                        <div class="card">
+                            <h3 class="card-title">For Markets</h3>
+                            <p class="card-content">Small rating changes can significantly impact financial markets due to regulatory reliance.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer">
+                    <p>Rating scales serve as critical communication tools in financial markets</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 6: Market Presence -->
+        <div class="slide" id="slide6">
+            <div class="slide-header">
+                <h2 class="slide-title">Market Presence of CRAs</h2>
+                <span class="slide-number">6</span>
+            </div>
+            <div class="slide-content">
+                <div class="text-content">
+                    <p>The credit rating industry is dominated by three major agencies, often referred to as the "Big Three".</p>
+                    
+                    <div class="chart-container">
+                        <canvas id="marketShareChart"></canvas>
+                    </div>
+                    
+                    <div class="grid">
+                        <div class="card">
+                            <h3 class="card-title">US Market (2023)</h3>
+                            <p class="card-content">Total ratings: 2.11 million (down from 2.51 million in 2011)</p>
+                            <p class="card-content">Big Three share: 94.15% (was 96.42% in 2011)</p>
+                        </div>
+                        <div class="card">
+                            <h3 class="card-title">Nepal Market (2024)</h3>
+                            <p class="card-content">Total ratings: 497 in last financial year</p>
+                            <p class="card-content">Three agencies: ICRA Nepal, CARE Ratings, Infomerics</p>
+                        </div>
+                    </div>
+                    
+                    <div class="quote">
+                        "The Big Three's market dominance creates high barriers to entry and limits competition in the credit rating industry."
+                    </div>
+                </div>
+                <div class="footer">
+                    <p>Market concentration remains extremely high despite regulatory efforts</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 7: Bond Market Participants -->
+        <div class="slide" id="slide7">
+            <div class="slide-header">
+                <h2 class="slide-title">Bond Market Participants</h2>
+                <span class="slide-number">7</span>
+            </div>
+            <div class="slide-content">
+                <div class="text-content">
+                    <p>Understanding who issues and holds bonds helps explain the role of credit ratings.</p>
+                    
+                    <div class="chart-container">
+                        <canvas id="bondOwnershipChart"></canvas>
+                    </div>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Bond Type</th>
+                                <th>Primary Holders</th>
+                                <th>Rating Importance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Treasury Bonds</td>
+                                <td>International Investors</td>
+                                <td>High (sovereign ratings)</td>
+                            </tr>
+                            <tr>
+                                <td>Municipal Bonds</td>
+                                <td>Households (46.06%)</td>
+                                <td>Critical for retail investors</td>
+                            </tr>
+                            <tr>
+                                <td>Corporate Bonds</td>
+                                <td>Financial Institutions</td>
+                                <td>Regulatory capital requirements</td>
+                            </tr>
+                            <tr>
+                                <td>MBS/CDOs</td>
+                                <td>Institutional Investors</td>
+                                <td>Pre-crisis: Over-relied upon</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="footer">
+                    <p>Different bond types serve different investor needs with varying rating importance</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 8: Market Position -->
+        <div class="slide" id="slide8">
+            <div class="slide-header">
+                <h2 class="slide-title">CRAs as Central Entities</h2>
+                <span class="slide-number">8</span>
+            </div>
+            <div class="slide-content">
+                <div class="text-content">
+                    <p>Credit Rating Agencies occupy a unique position in financial markets, serving multiple stakeholders.</p>
+                    
+                    <div class="chart-container">
+                        <canvas id="craCentralityChart"></canvas>
+                    </div>
+                    
+                    <div class="grid">
+                        <div class="card">
+                            <h3 class="card-title">Trust Mechanism</h3>
+                            <p class="card-content">Historical success in building trust through consistent rating methodologies.</p>
+                        </div>
+                        <div class="card">
+                            <h3 class="card-title">Regulatory Mandate</h3>
+                            <p class="card-content">Government regulations require bond ratings before issuance.</p>
+                        </div>
+                        <div class="card">
+                            <h3 class="card-title">Market Influence</h3>
+                            <p class="card-content">Ratings changes move markets, though this may reflect regulatory reliance rather than pure information value.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="quote">
+                        "As long as ratings are integrated into prudential regulation, the true value added by major CRAs remains unresolved."
+                    </div>
+                </div>
+                <div class="footer">
+                    <p>CRAs' centrality stems from both market trust and regulatory requirements</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 9: Issuer-Pay Model -->
+        <div class="slide" id="slide9">
+            <div class="slide-header">
+                <h2 class="slide-title">Issuer-Pay Model Concerns</h2>
+                <span class="slide-number">9</span>
+            </div>
+            <div class="slide-content">
+                <div class="text-content">
+                    <p>The prevailing business model where bond issuers pay for ratings creates potential conflicts of interest.</p>
+                    
+                    <div class="chart-container">
+                        <canvas id="issuerPayChart"></canvas>
+                    </div>
+                    
+                    <div class="grid">
+                        <div class="card">
+                            <h3 class="card-title">Conflict of Interest</h3>
+                            <p class="card-content">Issuers may pressure CRAs for favorable ratings to reduce borrowing costs.</p>
+                        </div>
+                        <div class="card">
+                            <h3 class="card-title">Reputation Defense</h3>
+                            <p class="card-content">CRAs maintain rating integrity to protect long-term reputation despite short-term incentives.</p>
+                        </div>
+                        <div class="card">
+                            <h3 class="card-title">Other Limitations</h3>
+                            <p class="card-content">Focus on long-term positions may ignore short-term financial reversals.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer">
+                    <p>The issuer-pay model creates inherent tensions between commercial and analytical priorities</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 10: Alternative Models -->
+        <div class="slide" id="slide10">
+            <div class="slide-header">
+                <h2 class="slide-title">Alternative Business Models</h2>
+                <span class="slide-number">10</span>
+            </div>
+            <div class="slide-content">
+                <div class="text-content">
+                    <p>Several alternative models have been proposed to address conflicts in the issuer-pay system.</p>
+                    
+                    <div class="grid">
+                        <div class="card">
+                            <h3 class="card-title">Investor-Pay Model</h3>
+                            <p class="card-content">Subscribers (investors) pay for ratings, aligning incentives with users rather than issuers.</p>
+                            <p class="card-content"><strong>Challenge:</strong> Free-rider problem as ratings become public.</p>
+                        </div>
+                        <div class="card">
+                            <h3 class="card-title">Advertising Model</h3>
+                            <p class="card-content">Fee-based service supported by advertising revenue.</p>
+                            <p class="card-content"><strong>Challenge:</strong> Potential influence from advertiser interests.</p>
+                        </div>
+                        <div class="card">
+                            <h3 class="card-title">Government Mandated Model</h3>
+                            <p class="card-content">Random assignment of CRAs to issuers by regulatory bodies.</p>
+                            <p class="card-content"><strong>Challenge:</strong> Government influence in rating process.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-container" style="height: 200px; margin-top: 20px;">
+                        <canvas id="modelComparisonChart"></canvas>
+                    </div>
+                </div>
+                <div class="footer">
+                    <p>Each alternative model presents trade-offs between independence, funding, and practicality</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 11: Competition Analysis -->
+        <div class="slide" id="slide11">
+            <div class="slide-header">
+                <h2 class="slide-title">Competition in CRA Industry</h2>
+                <span class="slide-number">11</span>
+            </div>
+            <div class="slide-content">
+                <div class="text-content">
+                    <p>The credit rating industry exhibits extremely high concentration with limited competition.</p>
+                    
+                    <div class="chart-container">
+                        <canvas id="competitionChart"></canvas>
+                    </div>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Metric</th>
+                                <th>Value</th>
+                                <th>Implication</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Herfindahl-Hirschman Index</td>
+                                <td>3655</td>
+                                <td>Highly concentrated (10000 = monopoly)</td>
+                            </tr>
+                            <tr>
+                                <td>Barriers to Entry</td>
+                                <td>Very High</td>
+                                <td>Limited by reputation, regulation, and scale</td>
+                            </tr>
+                            <tr>
+                                <td>CRARA 2006 Impact</td>
+                                <td>Moderate</td>
+                                <td>Reduced some barriers but dominance persists</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="quote">
+                        "Increased competition might lead to rating inflation as CRAs compete for issuer business, particularly affecting naive investors."
+                    </div>
+                </div>
+                <div class="footer">
+                    <p>Market structure challenges complicate efforts to increase competition</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 12: Financial Crisis Role -->
+        <div class="slide" id="slide12">
+            <div class="slide-header">
+                <h2 class="slide-title">CRAs in the Financial Crisis</h2>
+                <span class="slide-number">12</span>
+            </div>
+            <div class="slide-content">
+                <div class="text-content">
+                    <p>Credit Rating Agencies played a pivotal role in the 2007-2008 financial crisis through their ratings of mortgage-backed securities.</p>
+                    
+                    <div class="chart-container">
+                        <canvas id="mbsRatingsChart"></canvas>
+                    </div>
+                    
+                    <div class="grid">
+                        <div class="card">
+                            <h3 class="card-title">Pre-Crisis (2000-2007)</h3>
+                            <p class="card-content">Assigned AAA ratings to senior MBS tranches based on rising housing market data</p>
+                            <p class="card-content">Facilitated rapid expansion of private-label MBS market</p>
+                        </div>
+                        <div class="card">
+                            <h3 class="card-title">Crisis (2007-2009)</h3>
+                            <p class="card-content">Massive downgrades as mortgage defaults surged</p>
+                            <p class="card-content">By mid-2009: 90% of AAA CDOs and 63% of MBS downgraded</p>
+                        </div>
+                    </div>
+                    
+                    <div class="quote">
+                        "CRAs relied on historical data from a rising market, failing to account for potential housing price declines and correlated defaults."
+                    </div>
+                </div>
+                <div class="footer">
+                    <p>The crisis exposed critical weaknesses in CRA methodologies and conflicts</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 13: Post-Crisis Regulations -->
+        <div class="slide" id="slide13">
+            <div class="slide-header">
+                <h2 class="slide-title">Post-Crisis Regulations</h2>
+                <span class="slide-number">13</span>
+            </div>
+            <div class="slide-content">
+                <div class="text-content">
+                    <p>The financial crisis led to significant regulatory changes affecting Credit Rating Agencies.</p>
+                    
+                    <div class="timeline">
+                        <div class="timeline-item left">
+                            <div class="timeline-content">
+                                <div class="timeline-year">2006</div>
+                                <p><strong>CRARA:</strong> First major regulation requiring transparency and addressing conflicts</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item right">
+                            <div class="timeline-content">
+                                <div class="timeline-year">2010</div>
+                                <p><strong>Dodd-Frank Act:</strong> Expanded CRA regulation and mandated reduced regulatory reliance on NRSRO ratings</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item left">
+                            <div class="timeline-content">
+                                <div class="timeline-year">2010-2015</div>
+                                <p><strong>EU Regulations:</strong> Similar efforts in Europe to increase oversight and accountability</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid" style="margin-top: 30px;">
+                        <div class="card">
+                            <h3 class="card-title">Regulatory Dilemma</h3>
+                            <p class="card-content">Increased regulation may entrench dominant CRAs by raising compliance costs for new entrants</p>
+                        </div>
+                        <div class="card">
+                            <h3 class="card-title">Key Question</h3>
+                            <p class="card-content">Is regulatory reliance on CRA ratings necessary, or does it create artificial demand?</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer">
+                    <p>Regulatory responses have been substantial but their effectiveness remains debated</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 14: Conclusions -->
+        <div class="slide" id="slide14">
+            <div class="slide-header">
+                <h2 class="slide-title">Conclusions and Recommendations</h2>
+                <span class="slide-number">14</span>
+            </div>
+            <div class="slide-content">
+                <div class="text-content">
+                    <div class="grid">
+                        <div class="card">
+                            <h3 class="card-title">Key Findings</h3>
+                            <ul style="padding-left: 20px; color: #555;">
+                                <li style="margin-bottom: 8px;">CRAs are essential but flawed intermediaries in financial markets</li>
+                                <li style="margin-bottom: 8px;">Market dominance creates systemic risks and limits innovation</li>
+                                <li style="margin-bottom: 8px;">Regulatory reliance on ratings may distort market signals</li>
+                                <li>Conflicts in issuer-pay model persist despite reforms</li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <h3 class="card-title">Recommendations</h3>
+                            <ul style="padding-left: 20px; color: #555;">
+                                <li style="margin-bottom: 8px;">Gradually reduce regulatory reliance on CRA ratings</li>
+                                <li style="margin-bottom: 8px;">Encourage alternative business models and competition</li>
+                                <li style="margin-bottom: 8px;">Enhance transparency in rating methodologies</li>
+                                <li>Develop institutional investor capabilities for independent analysis</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="quote" style="margin-top: 30px;">
+                        "Decoupling CRA ratings from prudential regulation could create a more competitive and innovative credit rating industry that better serves financial system needs."
+                    </div>
+                </div>
+                <div class="footer">
+                    <p>Fundamental reforms are needed to address structural issues in the credit rating industry</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 15: CRAs in Nepal -->
+        <div class="slide" id="slide15">
+            <div class="slide-header">
+                <h2 class="slide-title">Credit Rating Agencies in Nepal</h2>
+                <span class="slide-number">15</span>
+            </div>
+            <div class="slide-content">
+                <div class="text-content">
+                    <p>Nepal's credit rating market is developing with three recognized agencies.</p>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Agency</th>
+                                <th>Affiliation</th>
+                                <th>Services</th>
+                                <th>Established</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>ICRA Nepal</td>
+                                <td>Subsidiary of ICRA India (Moody's affiliate)</td>
+                                <td>IPOs, bank loans, corporate ratings</td>
+                                <td>2010</td>
+                            </tr>
+                            <tr>
+                                <td>CARE Ratings Nepal</td>
+                                <td>Part of CARE Ratings India</td>
+                                <td>Financial instruments, company ratings</td>
+                                <td>2011</td>
+                            </tr>
+                            <tr>
+                                <td>Infomerics Credit Rating</td>
+                                <td>Independent</td>
+                                <td>Bonds, debentures, IPOs, bank loans</td>
+                                <td>2022</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="chart-container" style="height: 200px; margin-top: 20px;">
+                        <canvas id="nepalRatingsChart"></canvas>
+                    </div>
+                </div>
+                <div class="footer">
+                    <p>Nepal's credit rating industry is growing but remains small compared to global markets</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 16: Final Slide -->
+        <div class="slide" id="slide16">
+            <div class="slide-content" style="justify-content: center; align-items: center; text-align: center;">
+                <h1 style="font-size: 2.5rem; color: var(--primary); margin-bottom: 30px;">Thank You!</h1>
+                <div style="max-width: 600px; margin: 0 auto 40px;">
+                    <p style="font-size: 1.1rem; margin-bottom: 20px;">Credit Rating Agencies play a critical but controversial role in modern financial markets.</p>
+                    <p style="font-size: 1.1rem;">Structural reforms are needed to address conflicts, improve competition, and reduce systemic risks.</p>
+                </div>
+                <div style="margin-top: 40px;">
+                    <p style="font-size: 0.9rem; color: #777;">Presented by: Gaurab Raymajhi, Neeraj Ray, Bishnu Oli, Akash Upadhyay</p>
+                    <p style="font-size: 0.9rem; color: #777;">MBA-F, Nepal Commerce Campus</p>
+                    <p style="font-size: 0.9rem; color: #777; margin-top: 20px;">Based on: White, L. J. (2013). Credit Rating Agencies: An Overview.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="controls">
+        <div class="control-btn" id="prevBtn"><i class="fas fa-arrow-left"></i></div>
+        <div class="control-btn" id="nextBtn"><i class="fas fa-arrow-right"></i></div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Slide navigation
+        const slides = document.querySelectorAll('.slide');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const progress = document.getElementById('progress');
+        
+        let currentSlide = 0;
+        
+        function updateSlide() {
+            slides.forEach((slide, index) => {
+                if (index === currentSlide) {
+                    slide.classList.add('active');
+                    slide.classList.remove('prev', 'next');
+                } else if (index < currentSlide) {
+                    slide.classList.remove('active', 'next');
+                    slide.classList.add('prev');
+                } else {
+                    slide.classList.remove('active', 'prev');
+                    slide.classList.add('next');
+                }
+            });
+            
+            // Update progress bar
+            const progressPercent = (currentSlide / (slides.length - 1)) * 100;
+            progress.style.width = `${progressPercent}%`;
+        }
+        
+        function nextSlide() {
+            if (currentSlide < slides.length - 1) {
+                currentSlide++;
+                updateSlide();
+            }
+        }
+        
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlide();
+            }
+        }
+        
+        nextBtn.addEventListener('click', nextSlide);
+        prevBtn.addEventListener('click', prevSlide);
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                prevSlide();
+            }
+        });
+        
+        // Initialize
+        updateSlide();
+        
+        // Charts
+        document.addEventListener('DOMContentLoaded', function() {
+            // Market Share Chart
+            const marketShareCtx = document.getElementById('marketShareChart').getContext('2d');
+            const marketShareChart = new Chart(marketShareCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Moody\'s', 'S&P', 'Fitch', 'Others'],
+                    datasets: [{
+                        data: [40.2, 38.7, 15.25, 5.85],
+                        backgroundColor: [
+                            '#3498db',
+                            '#e74c3c',
+                            '#f39c12',
+                            '#2ecc71'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Market Share of Major CRAs (2023)',
+                            font: {
+                                size: 16
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.label}: ${context.raw}%`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Bond Ownership Chart
+            const bondOwnershipCtx = document.getElementById('bondOwnershipChart').getContext('2d');
+            const bondOwnershipChart = new Chart(bondOwnershipCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Households', 'Mutual Funds', 'Pension Funds', 'Insurance Cos.', 'Banks', 'Foreign'],
+                    datasets: [{
+                        label: 'Percentage of Bond Ownership',
+                        data: [46.06, 18.3, 12.4, 10.2, 8.5, 4.54],
+                        backgroundColor: '#3498db',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Percentage (%)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Municipal Bond Ownership by Investor Type (2012)',
+                            font: {
+                                size: 16
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // CRA Centrality Chart
+            const craCentralityCtx = document.getElementById('craCentralityChart').getContext('2d');
+            const craCentralityChart = new Chart(craCentralityCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['Market Trust', 'Regulatory Mandate', 'Information Value', 'Investor Reliance', 'Issuer Dependence', 'Systemic Importance'],
+                    datasets: [{
+                        label: 'Centrality Factors',
+                        data: [85, 90, 70, 80, 75, 95],
+                        backgroundColor: 'rgba(52, 152, 219, 0.2)',
+                        borderColor: 'rgba(52, 152, 219, 1)',
+                        pointBackgroundColor: 'rgba(52, 152, 219, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(52, 152, 219, 1)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        r: {
+                            angleLines: {
+                                display: true
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 100
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Factors Contributing to CRAs Market Position',
+                            font: {
+                                size: 16
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Issuer Pay Model Chart
+            const issuerPayCtx = document.getElementById('issuerPayChart').getContext('2d');
+            const issuerPayChart = new Chart(issuerPayCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Issuer Pays', 'Investor Pays', 'Mixed/Other'],
+                    datasets: [{
+                        data: [92, 5, 3],
+                        backgroundColor: [
+                            '#e74c3c',
+                            '#2ecc71',
+                            '#f39c12'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'CRA Revenue Models (2023)',
+                            font: {
+                                size: 16
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.label}: ${context.raw}%`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Model Comparison Chart
+            const modelComparisonCtx = document.getElementById('modelComparisonChart').getContext('2d');
+            const modelComparisonChart = new Chart(modelComparisonCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Conflict Risk', 'Funding Stability', 'Investor Alignment', 'Practicality'],
+                    datasets: [
+                        {
+                            label: 'Issuer-Pay',
+                            data: [20, 90, 30, 95],
+                            backgroundColor: '#e74c3c'
+                        },
+                        {
+                            label: 'Investor-Pay',
+                            data: [80, 40, 90, 50],
+                            backgroundColor: '#2ecc71'
+                        },
+                        {
+                            label: 'Government',
+                            data: [70, 70, 60, 60],
+                            backgroundColor: '#f39c12'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: 'Score (0-100)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Comparison of Alternative Business Models',
+                            font: {
+                                size: 16
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Competition Chart
+            const competitionCtx = document.getElementById('competitionChart').getContext('2d');
+            const competitionChart = new Chart(competitionCtx, {
+                type: 'line',
+                data: {
+                    labels: ['2000', '2005', '2010', '2015', '2020', '2023'],
+                    datasets: [{
+                        label: 'Herfindahl-Hirschman Index (HHI)',
+                        data: [3800, 3750, 3700, 3680, 3660, 3655],
+                        borderColor: '#e74c3c',
+                        backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 3500,
+                            max: 4000,
+                            title: {
+                                display: true,
+                                text: 'HHI Score'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Year'
+                            }
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Market Concentration in CRA Industry (HHI)',
+                            font: {
+                                size: 16
+                            }
+                        },
+                        annotation: {
+                            annotations: {
+                                line1: {
+                                    type: 'line',
+                                    yMin: 2500,
+                                    yMax: 2500,
+                                    borderColor: 'rgb(75, 192, 192)',
+                                    borderWidth: 2,
+                                    label: {
+                                        content: 'Highly Concentrated',
+                                        enabled: true,
+                                        position: 'right'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // MBS Ratings Chart
+            const mbsRatingsCtx = document.getElementById('mbsRatingsChart').getContext('2d');
+            const mbsRatingsChart = new Chart(mbsRatingsCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['2000-2006', '2007', '2008', '2009'],
+                    datasets: [
+                        {
+                            label: 'AAA Rated',
+                            data: [95, 85, 60, 30],
+                            backgroundColor: '#2ecc71'
+                        },
+                        {
+                            label: 'Downgraded',
+                            data: [5, 15, 40, 70],
+                            backgroundColor: '#e74c3c'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: 'Percentage of MBS'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Year'
+                            }
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'MBS Rating Changes During Financial Crisis',
+                            font: {
+                                size: 16
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Nepal Ratings Chart
+            const nepalRatingsCtx = document.getElementById('nepalRatingsChart').getContext('2d');
+            const nepalRatingsChart = new Chart(nepalRatingsCtx, {
+                type: 'line',
+                data: {
+                    labels: ['2019', '2020', '2021', '2022', '2023'],
+                    datasets: [{
+                        label: 'Number of Ratings Issued',
+                        data: [320, 350, 400, 450, 497],
+                        borderColor: '#3498db',
+                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Number of Ratings'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Year'
+                            }
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Growth of Credit Ratings in Nepal',
+                            font: {
+                                size: 16
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
